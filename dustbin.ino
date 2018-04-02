@@ -1,56 +1,77 @@
 #include <Servo.h>
-#include <Arduino.h>
 
 #define MAX_DISTANCE_RANGE 50
 
 int triger_pin = 2;
 int echo_pin = 4;
-int dusbin_trigger_pin  = 3;
-int dustbin_echo_pin = 5;
-long durations;
-int isDustbinFull = 0;
-long maxDistance = 25;`
-long current_distance;
-long dustbin_level = 0;
 
-Servo servo1,servo2,servo3;
-
+long prev_duration = 0;
+long current_duration = 0;
+long distance_cm = 0;
+float level_cm = 25;
+int angle = 0;
+Servo servo;
 
 void setup() {
   Serial.begin(9600);
-  servo1.attach(9);
+  servo.attach(9);
+  servo.write(0);
 }
+
+
 
 void loop() {
-  current_distance = get_distance(echo_pin,triger_pin);
-  Serial.println(get_distance(dustbin_echo_pin,dusbin_trigger_pin));
-  if(isDustbinFull && current_distance < maxDistance) {
-  // Dustbin will not
-  // near by Dustbin  will open automatically
-  //TODO: Open servo dustbin 2
-  } else if (current_distance < maxDistance)) {
-    open_dustbin();
+  
+  current_duration = get_level();
+  distance_cm = get_distance() / 29 / 2;
+  level_cm = current_duration / 29 / 2;
+  if (distance_cm < 25 || level_cm < 5 ) {
+    if(level_cm < 5) {
+      Serial.println(level_cm);
+      }else {
+    servo.write(90);
+    delay(15000);
+    servo.write(0);
+      }
+  }else {
+  if (level_cm > 25) {
+    Serial.println(25);
+  } else {
+    Serial.println(level_cm);
   }
-
-}
-
-int open_dustbin() {
-    Serial.println("Opening Dustbin");
-    servo3.write(90);
-    delay(60000);
+  delay(1000);
+  }
 }
 
 
-long get_distance(echo,trigger) {
+/**
+   it returns the duration after hitting the object
+*/
+long get_level() {
   long duration;
-  pinMode(trigger,OUTPUT);
-  digitalWrite(trigger,LOW);
+  pinMode(triger_pin, OUTPUT);
+  digitalWrite(triger_pin, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigger,HIGH);
+  digitalWrite(triger_pin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigger,LOW);
-  pinMode(echo,INPUT);
-  duration = pulseIn(echo,HIGH);
+  digitalWrite(triger_pin, LOW);
+  pinMode(echo_pin, INPUT);
+  duration = pulseIn(echo_pin, HIGH);
   delay(15);
-  return duration/29/2;
+  return duration;
+
+}
+long get_distance() {
+  long duration;
+  pinMode(5, OUTPUT);
+  digitalWrite(5, LOW);
+  delayMicroseconds(2);
+  digitalWrite(5, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(5, LOW);
+  pinMode(6, INPUT);
+  duration = pulseIn(6, HIGH);
+  delay(15);
+  return duration;
+
 }
