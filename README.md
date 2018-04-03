@@ -17,7 +17,7 @@ This repo contains the code for smart dustbins
 - connect trigger pin and echo pin of second ultra sound sensor to 5 and 6 respectively and vcc to 5v, gnd to gnd
 - connect servo Signal wire to pin number 9 and vcc to 5v and gnd to gnd.
 - upload the code to ardiuno
-- run ```sh python dustbin.py ```
+- run ``` python dustbin.py ```
 
 ----
 
