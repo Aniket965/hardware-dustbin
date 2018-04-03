@@ -18,3 +18,8 @@ This repo contains the code for smart dustbins
 - connect servo Signal wire to pin number 9 and vcc to 5v and gnd to gnd.
 - upload the code to ardiuno
 - run ```sh python dustbin.py ```
+
+----
+
+## 🙌🏻 Next Step
+- run [App](https://github.com/Aniket965/rn-dustbin)
