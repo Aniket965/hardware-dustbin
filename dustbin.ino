@@ -10,36 +10,45 @@ long current_duration = 0;
 long distance_cm = 0;
 float level_cm = 25;
 int angle = 0;
-Servo servo;
-
+Servo servo,servo_2;
+int button_state = 0;
 void setup() {
   Serial.begin(9600);
+  servo_2.attach(8);
   servo.attach(9);
-  servo.write(0);
+  servo_2.write(45);
+  servo.write(45);
 }
 
 
 
 void loop() {
-  
   current_duration = get_level();
   distance_cm = get_distance() / 29 / 2;
   level_cm = current_duration / 29 / 2;
-  if (distance_cm < 25 || level_cm < 5 ) {
-    if(level_cm < 5) {
-      Serial.println(level_cm);
-      }else {
-    servo.write(90);
-    delay(15000);
-    servo.write(0);
-      }
-  }else {
-  if (level_cm > 25) {
-    Serial.println(25);
-  } else {
-    Serial.println(level_cm);
+  pinMode(12,INPUT);
+  button_state = digitalRead(12);
+  Serial.println(button_state);
+  if ((distance_cm < 5 && level_cm > 10) || button_state == 1) {
+    servo.write(140);
+    delay(10000);
+    servo.write(45);
+    delay(1000);
   }
-  delay(1000);
+  else {
+    if (level_cm > 25) {
+      Serial.println(25);
+    }else if (level_cm < 10 && distance_cm < 5) {
+      servo_2.write(180);
+      delay(10000);
+      servo_2.write(45);
+      Serial.println(0);
+     }
+    
+    else {
+      Serial.println(level_cm);
+    }
+    delay(1000);
   }
 }
 
